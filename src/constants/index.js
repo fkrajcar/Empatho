@@ -8,4 +8,4 @@ module.exports.VIDEO_CONSTRAINTS = {
   facingMode: 'user',
 };
 
-module.exports.MODEL_URL = '/models';
+module.exports.MODEL_URL = '../models/';
