@@ -1,16 +1,13 @@
 import React, { Component } from 'react';
 import * as faceapi from 'face-api.js';
 import Container from 'react-bootstrap/Container';
-import { default as ReactImage } from 'react-bootstrap/Image';
+import Image from 'react-bootstrap/Image';
 import Webcam from 'react-webcam';
 import Button from 'react-bootstrap/Button';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 
-import { SsdMobilenetv1Options } from 'face-api.js/build/commonjs/ssdMobilenetv1/SsdMobilenetv1Options';
-import { MtcnnOptions } from 'face-api.js/build/commonjs/mtcnn/MtcnnOptions';
-import { TinyYolov2Options } from 'face-api.js/build/commonjs/tinyYolov2';
 import { EXPRESSION_DETECTION_INTERVAL_MS, MODEL_URL, WEBCAM_HEIGHT, WEBCAM_WIDTH, VIDEO_CONSTRAINTS } from './constants';
 
 export default class App extends Component {
@@ -58,10 +55,11 @@ export default class App extends Component {
     };
 
     loadModels = async () => {
-      await faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL);
-      // await faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL);
-      // await faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL);
-      await faceapi.nets.faceExpressionNet.loadFromUri(MODEL_URL);
+      await faceapi.loadTinyFaceDetectorModel(MODEL_URL);
+      // await faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL);
+
+      await faceapi.loadFaceExpressionModel(MODEL_URL);
+      // await faceapi.nets.faceExpressionNet.loadFromUri(MODEL_URL);
     };
 
     startCapturing = () => {
@@ -91,7 +89,7 @@ export default class App extends Component {
             >
               <canvas ref={this.canvasPicWebCam} width={WEBCAM_WIDTH} height={WEBCAM_HEIGHT} />
             </div>
-            <ReactImage className="emoji" src={`/img/${detectedExpression}.png`} fluid />
+            <Image className="emoji" src={`/img/${detectedExpression}.png`} fluid />
           </div>
           <div className="controls">
             <Button
