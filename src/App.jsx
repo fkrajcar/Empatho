@@ -8,7 +8,7 @@ import Button from 'react-bootstrap/Button';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 
-import { EXPRESSION_DETECTION_INTERVAL_MS, MODEL_URL, WEBCAM_HEIGHT, WEBCAM_WIDTH, VIDEO_CONSTRAINTS } from './constants';
+import { EXPRESSION_DETECTION_INTERVAL_MS, MODEL_URL, WEBCAM_HEIGHT, WEBCAM_WIDTH, VIDEO_CONSTRAINTS, TIMER_INTERVAL_MS } from './constants';
 
 export default class App extends Component {
   constructor(props) {
@@ -21,16 +21,25 @@ export default class App extends Component {
     this.state = {
       isLoading: true,
       isDetected: false,
+      hasStarted: false,
       detectedExpression: 'neutral',
+      startingTimer: 3,
     };
   }
 
   async componentDidMount() {
     this.loadModels().then(() => {
-      this.setState({
-        isLoading: false,
-      });
+      this.startCapturing();
     });
+  }
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    const { hasStarted, startingTimer } = this.state;
+
+    if (hasStarted === true && startingTimer === 3) {
+
+    }
+    console.log(prevProps.startingTimer);
   }
 
     getFullFaceDescription = async (pictureSrc) => {
@@ -62,6 +71,27 @@ export default class App extends Component {
       // await faceapi.nets.faceExpressionNet.loadFromUri(MODEL_URL);
     };
 
+  startGame = () => {
+    const { hasStarted } = this.state;
+    let { startingTimer } = this.state;
+
+    this.setState({
+      hasStarted: !hasStarted,
+    });
+
+    const timerStart = setInterval(() => {
+      if (startingTimer === 1) {
+        clearInterval(timerStart);
+      }
+
+      startingTimer -= 1;
+
+      this.setState({
+        startingTimer,
+      });
+    }, TIMER_INTERVAL_MS);
+  };
+
     startCapturing = () => {
       setInterval(() => {
         const imageSrc = this.webcam.current.getScreenshot();
@@ -71,12 +101,13 @@ export default class App extends Component {
     };
 
     render() {
-      const { isDetected, detectedExpression, isLoading } = this.state;
-
+      const { isDetected, detectedExpression, isLoading, hasStarted, startingTimer } = this.state;
+      console.log(startingTimer);
       return (
         <Container>
-          <div className="webcam-faces">
+          <div className={hasStarted ? 'webcam-faces hasStarted' : 'webcam-faces'}>
             <Webcam
+              className="webcam"
               audio={false}
               width={WEBCAM_WIDTH}
               height={WEBCAM_HEIGHT}
@@ -89,18 +120,24 @@ export default class App extends Component {
             >
               <canvas ref={this.canvasPicWebCam} width={WEBCAM_WIDTH} height={WEBCAM_HEIGHT} />
             </div>
-            <Image className="emoji" src={`/img/${detectedExpression}.png`} fluid />
+            <div className={hasStarted ? 'emoji-timer-container hasStarted' : 'emoji-timer-container'}>
+              {
+                hasStarted && startingTimer !== 0
+                  ? <p className="timer">{startingTimer}</p>
+                  : <Image className={hasStarted ? 'emoji hasStarted' : 'emoji'} src={`/img/${detectedExpression}.png`} />
+               }
+            </div>
+          </div>
+          <div className="current_expression-container">
+            <Image className="current_expression-emoji" src={`/img/${detectedExpression}.png`} />
           </div>
           <div className="controls">
             <Button
               variant="primary"
-              onClick={this.startCapturing}
+              onClick={this.startGame}
             >
-              Start
+              Start game
             </Button>
-            <p>
-              {detectedExpression}
-            </p>
           </div>
         </Container>
       );
