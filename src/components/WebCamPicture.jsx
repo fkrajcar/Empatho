@@ -1,15 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Webcam from 'react-webcam';
-import Button from '@material-ui/core/Button';
+import Button from 'react-bootstrap/Button';
 
-import { WEBCAM_HEIGHT, WEBCAM_WIDTH } from '../constants';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
-const videoConstraints = {
-  width: WEBCAM_WIDTH,
-  height: WEBCAM_HEIGHT,
-  facingMode: 'user',
-};
+import { WEBCAM_HEIGHT, WEBCAM_WIDTH, EXPRESSION_DETECTION_INTERVAL_MS, VIDEO_CONSTRAINTS } from '../constants';
 
 export default class WebCamPicture extends Component {
   constructor(props) {
@@ -25,28 +21,27 @@ export default class WebCamPicture extends Component {
         const imageSrc = this.webcam.current.getScreenshot();
 
         landmarkPicture(imageSrc);
-      }, 125);
+      }, EXPRESSION_DETECTION_INTERVAL_MS);
     };
 
     render() {
       return (
-        <div className="App" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <>
           <Webcam
             audio={false}
             width={WEBCAM_WIDTH}
             height={WEBCAM_HEIGHT}
+            videoConstraints={VIDEO_CONSTRAINTS}
             ref={this.webcam}
             screenshotFormat="image/jpeg"
-            videoConstraints={videoConstraints}
           />
           <Button
-            variant="contained"
-            color="primary"
+            variant="primary"
             onClick={this.startCapturing}
           >
             Start
           </Button>
-        </div>
+        </>
       );
     }
 }
