@@ -8,6 +8,9 @@ import Button from 'react-bootstrap/Button';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 
+import { SsdMobilenetv1Options } from 'face-api.js/build/commonjs/ssdMobilenetv1/SsdMobilenetv1Options';
+import { MtcnnOptions } from 'face-api.js/build/commonjs/mtcnn/MtcnnOptions';
+import { TinyYolov2Options } from 'face-api.js/build/commonjs/tinyYolov2';
 import { EXPRESSION_DETECTION_INTERVAL_MS, MODEL_URL, WEBCAM_HEIGHT, WEBCAM_WIDTH, VIDEO_CONSTRAINTS } from './constants';
 
 export default class App extends Component {
@@ -33,10 +36,14 @@ export default class App extends Component {
     });
   }
 
-    getFullFaceDescription = async (canvas) => {
-      const detections = await faceapi.detectSingleFace(canvas, new faceapi.TinyFaceDetectorOptions()).withFaceExpressions();
-      console.log(detections);
+    getFullFaceDescription = async (pictureSrc) => {
+      const image = await faceapi.fetchImage(pictureSrc);
+
+      const detections = await faceapi.detectSingleFace(image, new faceapi.TinyFaceDetectorOptions()).withFaceExpressions();
+
       if (detections !== undefined) {
+        console.log(detections.expressions);
+
         const detectedExpression = Object.keys(detections.expressions).reduce((a, b) => (detections.expressions[a] > detections.expressions[b] ? a : b));
 
         this.setState({
@@ -50,22 +57,10 @@ export default class App extends Component {
       }
     };
 
-    landmarkWebCamPicture = async (picture) => {
-      // await this.getFullFaceDescription(this.canvasPicWebCam.current);
-
-      const ctx = this.canvasPicWebCam.current.getContext('2d');
-      const image = new Image();
-      image.onload = async () => {
-        ctx.drawImage(image, 0, 0);
-      };
-      image.src = picture;
-      await this.getFullFaceDescription(this.canvasPicWebCam.current);
-    };
-
     loadModels = async () => {
       await faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL);
-      await faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL);
-      await faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL);
+      // await faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL);
+      // await faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL);
       await faceapi.nets.faceExpressionNet.loadFromUri(MODEL_URL);
     };
 
@@ -73,7 +68,7 @@ export default class App extends Component {
       setInterval(() => {
         const imageSrc = this.webcam.current.getScreenshot();
 
-        this.landmarkWebCamPicture(imageSrc);
+        this.getFullFaceDescription(imageSrc);
       }, EXPRESSION_DETECTION_INTERVAL_MS);
     };
 
