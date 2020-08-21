@@ -72,10 +72,10 @@ export default class App extends Component {
     };
 
     loadModels = async () => {
-      await faceapi.loadTinyFaceDetectorModel(process.env.PUBLIC_URL + MODEL_URL);
+      await faceapi.loadTinyFaceDetectorModel(MODEL_URL);
       // await faceapi.nets.tinyFaceDetector.loadFromUri(process.env.PUBLIC_URL + MODEL_URL);
 
-      await faceapi.loadFaceExpressionModel(process.env.PUBLIC_URL + MODEL_URL);
+      await faceapi.loadFaceExpressionModel(MODEL_URL);
       // await faceapi.nets.faceExpressionNet.loadFromUri(process.env.PUBLIC_URL + MODEL_URL);
     };
 

@@ -9,7 +9,7 @@ module.exports.VIDEO_CONSTRAINTS = {
   facingMode: 'user',
 };
 
-module.exports.MODEL_URL = '/models';
+module.exports.MODEL_URL = `${process.env.PUBLIC_URL}/models`;
 // deploy always this
-module.exports.IMAGES_URL = './img/';
+module.exports.IMAGES_URL = `${process.env.PUBLIC_URL}/img/`;
 // module.exports.IMAGES_URL = '/img/';
