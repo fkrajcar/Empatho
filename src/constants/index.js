@@ -10,3 +10,4 @@ module.exports.VIDEO_CONSTRAINTS = {
 };
 
 module.exports.MODEL_URL = '/models';
+module.exports.IMAGES_URL = './img/';

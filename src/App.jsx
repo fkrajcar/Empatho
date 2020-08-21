@@ -8,7 +8,15 @@ import Button from 'react-bootstrap/Button';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 
-import { EXPRESSION_DETECTION_INTERVAL_MS, MODEL_URL, WEBCAM_HEIGHT, WEBCAM_WIDTH, VIDEO_CONSTRAINTS, TIMER_INTERVAL_MS } from './constants';
+import {
+  EXPRESSION_DETECTION_INTERVAL_MS,
+  MODEL_URL,
+  WEBCAM_HEIGHT,
+  WEBCAM_WIDTH,
+  VIDEO_CONSTRAINTS,
+  TIMER_INTERVAL_MS,
+  IMAGES_URL,
+} from './constants';
 
 export default class App extends Component {
   constructor(props) {
@@ -124,12 +132,12 @@ export default class App extends Component {
               {
                 hasStarted && startingTimer !== 0
                   ? <p className="timer">{startingTimer}</p>
-                  : <Image className={hasStarted ? 'emoji hasStarted' : 'emoji'} src={`/img/${detectedExpression}.png`} />
+                  : <Image className={hasStarted ? 'emoji hasStarted' : 'emoji'} src={`${IMAGES_URL}${detectedExpression}.png`} />
                }
             </div>
           </div>
           <div className="current_expression-container">
-            <Image className="current_expression-emoji" src={`/img/${detectedExpression}.png`} />
+            <Image className="current_expression-emoji" src={`${IMAGES_URL}${detectedExpression}.png`} />
           </div>
           <div className="controls">
             <Button
