@@ -1,27 +1,27 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "422c5ee5062462200625e781941e500b",
+    "revision": "9f701704f4309dfd8173ab0540c8869c",
     "url": "/Empatho/index.html"
   },
   {
-    "revision": "fa9236c5c25ede1b29ac",
+    "revision": "43ddb1b20a798a1fc494",
     "url": "/Empatho/static/css/2.11829350.chunk.css"
   },
   {
-    "revision": "5b6f116524e0cb8deebf",
+    "revision": "31ecbea8aa43c778a2fc",
     "url": "/Empatho/static/css/main.752c2b1a.chunk.css"
   },
   {
-    "revision": "fa9236c5c25ede1b29ac",
-    "url": "/Empatho/static/js/2.4d682124.chunk.js"
+    "revision": "43ddb1b20a798a1fc494",
+    "url": "/Empatho/static/js/2.159a4c2d.chunk.js"
   },
   {
     "revision": "d0b59f24596445a3fbb9bf55a0c27bca",
-    "url": "/Empatho/static/js/2.4d682124.chunk.js.LICENSE.txt"
+    "url": "/Empatho/static/js/2.159a4c2d.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "5b6f116524e0cb8deebf",
-    "url": "/Empatho/static/js/main.bab6e1b3.chunk.js"
+    "revision": "31ecbea8aa43c778a2fc",
+    "url": "/Empatho/static/js/main.3ab95e1b.chunk.js"
   },
   {
     "revision": "60441728d1818157230a",
