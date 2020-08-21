@@ -73,31 +73,35 @@ export default class App extends Component {
 
     loadModels = async () => {
       await faceapi.loadTinyFaceDetectorModel(MODEL_URL);
-      // await faceapi.nets.tinyFaceDetector.loadFromUri(process.env.PUBLIC_URL + MODEL_URL);
-
       await faceapi.loadFaceExpressionModel(MODEL_URL);
-      // await faceapi.nets.faceExpressionNet.loadFromUri(process.env.PUBLIC_URL + MODEL_URL);
     };
 
   startGame = () => {
     const { hasStarted } = this.state;
     let { startingTimer } = this.state;
 
-    this.setState({
-      hasStarted: !hasStarted,
-    });
-
-    const timerStart = setInterval(() => {
-      if (startingTimer === 1) {
-        clearInterval(timerStart);
-      }
-
-      startingTimer -= 1;
-
+    if (hasStarted) {
       this.setState({
-        startingTimer,
+        hasStarted: !hasStarted,
+        startingTimer: 3,
       });
-    }, TIMER_INTERVAL_MS);
+    } else {
+      this.setState({
+        hasStarted: !hasStarted,
+      });
+
+      const timerStart = setInterval(() => {
+        if (startingTimer === 0) {
+          clearInterval(timerStart);
+        } else {
+          startingTimer -= 1;
+        }
+
+        this.setState({
+          startingTimer,
+        });
+      }, TIMER_INTERVAL_MS);
+    }
   };
 
     startCapturing = () => {
@@ -144,7 +148,11 @@ export default class App extends Component {
               variant="primary"
               onClick={this.startGame}
             >
-              Start game
+              {
+                hasStarted
+                  ? 'Stop game'
+                  : 'Start game'
+              }
             </Button>
           </div>
         </Container>

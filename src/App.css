@@ -68,3 +68,9 @@
     font-size: 30px;
 }
 
+.controls {
+    display: flex;
+    flex: 1;
+    justify-content: center;
+    padding-top: 20px;
+}
