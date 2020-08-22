@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "11c7d25dba5824f241ff9f77787b4b4f",
+    "revision": "2b129879bb25db38310e71075ba77bf6",
     "url": "/Empatho/index.html"
   },
   {
@@ -8,7 +8,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/Empatho/static/css/2.11829350.chunk.css"
   },
   {
-    "revision": "3c48565f8360ea5a42b6",
+    "revision": "3d03956e5da526a1f300",
     "url": "/Empatho/static/css/main.fce4917e.chunk.css"
   },
   {
@@ -20,8 +20,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/Empatho/static/js/2.159a4c2d.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "3c48565f8360ea5a42b6",
-    "url": "/Empatho/static/js/main.4e06c585.chunk.js"
+    "revision": "3d03956e5da526a1f300",
+    "url": "/Empatho/static/js/main.0e203ba7.chunk.js"
   },
   {
     "revision": "60441728d1818157230a",
