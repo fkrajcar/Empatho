@@ -32,6 +32,7 @@ export default class App extends Component {
       hasStarted: false,
       detectedExpression: 'neutral',
       startingTimer: 3,
+      intervalID: null,
     };
   }
 
@@ -78,29 +79,29 @@ export default class App extends Component {
 
   startGame = () => {
     const { hasStarted } = this.state;
-    let { startingTimer } = this.state;
+    let { startingTimer, intervalID } = this.state;
 
     if (hasStarted) {
+      clearInterval(intervalID);
       this.setState({
         hasStarted: !hasStarted,
         startingTimer: 3,
       });
     } else {
-      this.setState({
-        hasStarted: !hasStarted,
-      });
-
-      const timerStart = setInterval(() => {
+      intervalID = setInterval(() => {
         if (startingTimer === 0) {
-          clearInterval(timerStart);
+          clearInterval(intervalID);
         } else {
           startingTimer -= 1;
+          this.setState({
+            startingTimer,
+          });
         }
-
-        this.setState({
-          startingTimer,
-        });
       }, TIMER_INTERVAL_MS);
+      this.setState({
+        hasStarted: !hasStarted,
+        intervalID,
+      });
     }
   };
 
