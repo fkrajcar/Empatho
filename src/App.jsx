@@ -86,22 +86,51 @@ export default class App extends Component {
         gameCorrectEmotionTimer,
         gameScore,
         gameTimer,
+        randomExpression,
       } = this.state;
 
       this.setState(
         { gameScore: 0 },
       );
 
+      correctEmotionTimerIntervalID = setInterval(() => {
+        if (gameCorrectEmotionTimer === 0) {
+          this.setState({
+            gameCorrectEmotionTimer: 5,
+          });
+        } else {
+          gameCorrectEmotionTimer -= 1;
+          console.log(gameCorrectEmotionTimer);
+          this.setState(
+            { gameCorrectEmotionTimer },
+          );
+        }
+      }, TIMER_INTERVAL_MS);
+
       gameTimerIntervalID = setInterval(() => {
-        gameTimer -= 1;
-        console.log(gameTimer);
-        this.setState(
-          { gameTimer },
-        );
+        if (gameTimer === 0) {
+          this.gameLogicStop();
+        } else {
+          gameTimer -= 1;
+
+          if (gameTimer % 5 === 0) {
+            let generateRandomExpression = sample(EXPRESSIONS);
+
+            while (randomExpression === generateRandomExpression) {
+              generateRandomExpression = sample(EXPRESSIONS);
+            }
+
+            randomExpression = generateRandomExpression;
+          }
+
+          this.setState(
+            { gameTimer, randomExpression },
+          );
+        }
       }, TIMER_INTERVAL_MS);
 
       this.setState(
-        { gameTimerIntervalID },
+        { gameTimerIntervalID, correctEmotionTimerIntervalID },
       );
     }
 
@@ -114,8 +143,12 @@ export default class App extends Component {
     } = this.state;
 
     clearInterval(gameTimerIntervalID);
+    clearInterval(correctEmotionTimerIntervalID);
     this.setState(
-      { gameTimer: 60 },
+      {
+        gameTimer: 60,
+        hasStarted: false,
+      },
     );
   }
 
