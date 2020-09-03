@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/Empatho/static/css/main.1742bf38.chunk.css",
-    "main.js": "/Empatho/static/js/main.89bbb3cf.chunk.js",
-    "main.js.map": "/Empatho/static/js/main.89bbb3cf.chunk.js.map",
+    "main.js": "/Empatho/static/js/main.0d97321c.chunk.js",
+    "main.js.map": "/Empatho/static/js/main.0d97321c.chunk.js.map",
     "runtime-main.js": "/Empatho/static/js/runtime-main.c4a107da.js",
     "runtime-main.js.map": "/Empatho/static/js/runtime-main.c4a107da.js.map",
     "static/css/2.11829350.chunk.css": "/Empatho/static/css/2.11829350.chunk.css",
     "static/js/2.7bdf9427.chunk.js": "/Empatho/static/js/2.7bdf9427.chunk.js",
     "static/js/2.7bdf9427.chunk.js.map": "/Empatho/static/js/2.7bdf9427.chunk.js.map",
     "index.html": "/Empatho/index.html",
-    "precache-manifest.722ca8b1623343a90740b719b13805b8.js": "/Empatho/precache-manifest.722ca8b1623343a90740b719b13805b8.js",
+    "precache-manifest.5a50f6dc63e3b1fab6e96ce9e319424d.js": "/Empatho/precache-manifest.5a50f6dc63e3b1fab6e96ce9e319424d.js",
     "service-worker.js": "/Empatho/service-worker.js",
     "static/css/2.11829350.chunk.css.map": "/Empatho/static/css/2.11829350.chunk.css.map",
     "static/css/main.1742bf38.chunk.css.map": "/Empatho/static/css/main.1742bf38.chunk.css.map",
@@ -20,6 +20,6 @@
     "static/css/2.11829350.chunk.css",
     "static/js/2.7bdf9427.chunk.js",
     "static/css/main.1742bf38.chunk.css",
-    "static/js/main.89bbb3cf.chunk.js"
+    "static/js/main.0d97321c.chunk.js"
   ]
 }
