@@ -17,3 +17,16 @@ module.exports.VIDEO_CONSTRAINTS = {
 
 module.exports.MODEL_URL = `${process.env.PUBLIC_URL}/models`;
 module.exports.IMAGES_URL = `${process.env.PUBLIC_URL}/img/`;
+
+module.exports.CUSTOM_MODAL_STYLE = {
+  content: {
+    top: '200px',
+    left: '350px',
+    right: '350px',
+    bottom: '200px',
+    display: 'flex',
+    'flex-direction': 'column',
+    'justify-content': 'space-between',
+    'text-align': 'center',
+  },
+};

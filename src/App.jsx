@@ -5,6 +5,9 @@ import Image from 'react-bootstrap/Image';
 import Webcam from 'react-webcam';
 import Button from 'react-bootstrap/Button';
 import sample from 'lodash/sample';
+import { faClock, faCheck } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import Modal from 'react-modal';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
@@ -18,6 +21,7 @@ import {
   TIMER_INTERVAL_MS,
   IMAGES_URL,
   EXPRESSIONS,
+  CUSTOM_MODAL_STYLE,
 } from './constants';
 
 export default class App extends Component {
@@ -29,9 +33,9 @@ export default class App extends Component {
     this.webcam = React.createRef();
 
     this.state = {
-      isLoading: true,
-      isDetected: false,
       hasStarted: false,
+      isCorrect: false,
+      hasFinished: false,
       detectedExpression: 'neutral',
       randomExpression: sample(EXPRESSIONS),
       startingTimer: 3,
@@ -50,30 +54,42 @@ export default class App extends Component {
     });
   }
 
-  componentDidUpdate(prevProps, prevState, snapshot) {
-    const { hasStarted, startingTimer } = this.state;
-  }
-
     getFullFaceDescription = async (pictureSrc) => {
       const image = await faceapi.fetchImage(pictureSrc);
 
       const detections = await faceapi.detectSingleFace(image, new faceapi.TinyFaceDetectorOptions()).withFaceExpressions();
 
       if (detections !== undefined) {
-        console.log(detections.expressions);
-
         const detectedExpression = Object.keys(detections.expressions).reduce((a, b) => (detections.expressions[a] > detections.expressions[b] ? a : b));
 
         this.setState({
-          isDetected: true,
           detectedExpression,
-        });
-      } else {
-        this.setState({
-          isDetected: false,
         });
       }
     };
+
+  checkCorrect = () => {
+    const { detectedExpression } = this.state;
+    let { gameScore, randomExpression } = this.state;
+
+    if (detectedExpression === randomExpression) {
+      gameScore += 1;
+
+      let generateRandomExpression = sample(EXPRESSIONS);
+
+      while (randomExpression === generateRandomExpression && randomExpression === detectedExpression) {
+        generateRandomExpression = sample(EXPRESSIONS);
+      }
+
+      randomExpression = generateRandomExpression;
+
+      this.setState({ isCorrect: true, gameScore, randomExpression });
+
+      setTimeout(() => {
+        this.setState({ isCorrect: false });
+      }, 1500);
+    }
+  }
 
     loadModels = async () => {
       await faceapi.loadTinyFaceDetectorModel(MODEL_URL);
@@ -81,14 +97,14 @@ export default class App extends Component {
     };
 
     gameLogicStart = () => {
-      let { gameTimerIntervalID,
+      let {
+        gameTimerIntervalID,
         correctEmotionTimerIntervalID,
         gameCorrectEmotionTimer,
-        gameScore,
         gameTimer,
         randomExpression,
       } = this.state;
-
+      const { detectedExpression } = this.state;
       this.setState(
         { gameScore: 0 },
       );
@@ -97,10 +113,11 @@ export default class App extends Component {
         if (gameCorrectEmotionTimer === 0) {
           this.setState({
             gameCorrectEmotionTimer: 5,
+            correctEmotionTimerIntervalID,
           });
         } else {
           gameCorrectEmotionTimer -= 1;
-          console.log(gameCorrectEmotionTimer);
+
           this.setState(
             { gameCorrectEmotionTimer },
           );
@@ -109,22 +126,27 @@ export default class App extends Component {
 
       gameTimerIntervalID = setInterval(() => {
         if (gameTimer === 0) {
+          this.setState({ hasFinished: true });
           this.gameLogicStop();
         } else {
           gameTimer -= 1;
-
-          if (gameTimer % 5 === 0) {
+          this.checkCorrect();
+          if (gameTimer % 10 === 0) {
             let generateRandomExpression = sample(EXPRESSIONS);
 
-            while (randomExpression === generateRandomExpression) {
+            while (randomExpression === generateRandomExpression && randomExpression === detectedExpression) {
               generateRandomExpression = sample(EXPRESSIONS);
             }
 
             randomExpression = generateRandomExpression;
+
+            this.setState(
+              { randomExpression },
+            );
           }
 
           this.setState(
-            { gameTimer, randomExpression },
+            { gameTimer },
           );
         }
       }, TIMER_INTERVAL_MS);
@@ -135,19 +157,19 @@ export default class App extends Component {
     }
 
   gameLogicStop = () => {
-    const { gameTimerIntervalID,
+    const {
+      gameTimerIntervalID,
       correctEmotionTimerIntervalID,
-      gameCorrectEmotionTimer,
-      gameScore,
-      gameTimer,
+      intervalID,
     } = this.state;
 
+    clearInterval(intervalID);
     clearInterval(gameTimerIntervalID);
     clearInterval(correctEmotionTimerIntervalID);
     this.setState(
       {
-        gameTimer: 60,
         hasStarted: false,
+        startingTimer: 3,
       },
     );
   }
@@ -158,12 +180,11 @@ export default class App extends Component {
 
     if (hasStarted) {
       this.gameLogicStop();
-      clearInterval(intervalID);
-      this.setState({
-        hasStarted: !hasStarted,
-        startingTimer: 3,
-      });
     } else {
+      this.setState({
+        gameTimer: 60,
+        gameScore: 0,
+      });
       intervalID = setInterval(() => {
         if (startingTimer === 0) {
           this.gameLogicStart();
@@ -182,6 +203,10 @@ export default class App extends Component {
     }
   };
 
+   closeModal = () => {
+     this.setState({ hasFinished: false });
+   }
+
     startCapturing = () => {
       setInterval(() => {
         const imageSrc = this.webcam.current.getScreenshot();
@@ -191,7 +216,7 @@ export default class App extends Component {
     };
 
     render() {
-      const { isDetected, detectedExpression, isLoading, hasStarted, startingTimer, randomExpression } = this.state;
+      const { hasFinished, detectedExpression, hasStarted, startingTimer, randomExpression, gameTimer, gameScore, isCorrect } = this.state;
 
       return (
         <Container>
@@ -214,12 +239,30 @@ export default class App extends Component {
               {
                 hasStarted && startingTimer !== 0
                   ? <p className="timer">{startingTimer}</p>
-                  : <Image className={hasStarted ? 'emoji hasStarted' : 'emoji'} src={`${IMAGES_URL}${randomExpression}.png`} />
+                  : (
+                    <Image
+                      className={hasStarted ? 'emoji hasStarted' : 'emoji'}
+                      src={
+                      isCorrect
+                        ? `${IMAGES_URL}check-circle-regular.svg`
+                        : `${IMAGES_URL}${randomExpression}.png`
+                  }
+                    />
+                  )
                }
             </div>
           </div>
           <div className="current_expression-container">
+            <div className="spacer" />
             <Image className="current_expression-emoji" src={`${IMAGES_URL}${detectedExpression}.png`} />
+            <div className={hasStarted ? 'game-info' : 'game-info is-hidden'}>
+              <div className="timer">
+                <FontAwesomeIcon icon={faClock} /> <span className="timer-text">{`Vrijeme: ${gameTimer}`}</span>
+              </div>
+              <div className="timer">
+                <FontAwesomeIcon icon={faCheck} /> <span className="timer-text">{`Rezultat: ${gameScore}`}</span>
+              </div>
+            </div>
           </div>
           <div className="controls">
             <Button
@@ -228,11 +271,25 @@ export default class App extends Component {
             >
               {
                 hasStarted
-                  ? 'Stop game'
-                  : 'Start game'
+                  ? 'Zaustavi igru'
+                  : 'Pokreni igru'
               }
             </Button>
           </div>
+          <Modal
+            isOpen={hasFinished}
+            onRequestClose={this.closeModal}
+            style={CUSTOM_MODAL_STYLE}
+          >
+            <Image
+              className="emoji emoji-modal"
+              src={`${IMAGES_URL}happy.png`}
+            />
+            <h3>Bravo.</h3>
+            <h4>Ukupno ostvareni broj bodova:</h4>
+            <h3>{gameScore}</h3>
+            <Button onClick={this.closeModal}>ZATVORITI</Button>
+          </Modal>
         </Container>
       );
     }
