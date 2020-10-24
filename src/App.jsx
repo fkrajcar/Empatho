@@ -45,6 +45,7 @@ export default class App extends Component {
       gameCorrectEmotionTimer: 5,
       gameTimer: 60,
       gameScore: 0,
+      isLoading: true,
     };
   }
 
@@ -216,7 +217,8 @@ export default class App extends Component {
     };
 
     render() {
-      const { hasFinished, detectedExpression, hasStarted, startingTimer, randomExpression, gameTimer, gameScore, isCorrect } = this.state;
+      const { hasFinished, detectedExpression, hasStarted, startingTimer,
+        randomExpression, gameTimer, gameScore, isCorrect, isLoading } = this.state;
 
       return (
         <Container>
@@ -256,15 +258,16 @@ export default class App extends Component {
             <div className="spacer" />
             <Image className="current_expression-emoji" src={`${IMAGES_URL}${detectedExpression}.png`} />
             <div className={hasStarted ? 'game-info' : 'game-info is-hidden'}>
-              <div className="timer">
+              <div className="timer padding-b-30">
                 <FontAwesomeIcon icon={faClock} /> <span className="timer-text">{`Vrijeme: ${gameTimer}`}</span>
               </div>
-              <div className="timer">
+              <div className="timer padding-0">
                 <FontAwesomeIcon icon={faCheck} /> <span className="timer-text">{`Rezultat: ${gameScore}`}</span>
               </div>
             </div>
           </div>
           <div className="controls">
+            {!isLoading && (
             <Button
               variant={hasStarted ? 'danger' : 'primary'}
               onClick={this.startGame}
@@ -275,6 +278,7 @@ export default class App extends Component {
                   : 'Pokreni igru'
               }
             </Button>
+            )}
           </div>
           <Modal
             isOpen={hasFinished}
@@ -286,7 +290,7 @@ export default class App extends Component {
               src={`${IMAGES_URL}happy.png`}
             />
             <h3>Bravo.</h3>
-            <h4>Ukupno ostvareni broj bodova:</h4>
+            <h4>Ostvareni broj bodova:</h4>
             <h3>{gameScore}</h3>
             <Button onClick={this.closeModal}>ZATVORITI</Button>
           </Modal>
